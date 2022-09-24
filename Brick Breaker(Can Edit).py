@@ -24,7 +24,7 @@ class Bar:
         self.start_y = 870
         self.x = 300
         self.y = 25
-        self.speed = 2
+        self.speed = 4
         self.color = random.randint(50, 255), random.randint(50, 255), random.randint(50, 255)
 
     def draw_bar(self):
@@ -36,11 +36,11 @@ class Ball:
     def __init__(self):
         self.ball_img = pygame.image.load("진짜 공.png")
         self.ball_img = pygame.transform.scale(self.ball_img, (50, 50))
-        self.speed = 1
+        self.speed = 5
         self.start_x = 575
         self.start_y = 810
         self.direction = 0
-        while not ((20 <= self.direction <= 70) or (110 <= self.direction <= 160)): # 처음 각도 조정
+        while not ((20 <= self.direction <= 70) or (110 <= self.direction <= 160)):  # 처음 각도 조정
             self.direction = random.randint(20, 160)
         self.move_x = math.cos(math.pi * (self.direction / 180))
         self.move_y = math.sin(math.pi * (self.direction / 180))
@@ -86,6 +86,7 @@ right_move = False
 while not Quit:
     for event in pygame.event.get():  # 이벤트 처리 루프
         if event.type == pygame.QUIT:  # 종료 버튼(X)를 눌렀을 때 창 닫기
+
             Quit = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -125,10 +126,23 @@ while not Quit:
         ball.move_y = -ball.move_y
 
     # 바에 부딪혔을때
-    elif ball.start_y >= 820 and (ball.start_x >= bar.start_x and ball.start_x <= (bar.start_x + 300)):
+    elif ball.start_y >= 820 and (bar.start_x <= ball.start_x <= (bar.start_x + 300)):
         ball.move_y = -ball.move_y
 
-    for i in range(20):
+    # 벽돌에 부딪혔을떄
+    num_bricks = len(brick_list)
+    for i in range(num_bricks):
+        if ball.start_y + 50 >= brick_list[i].start_y and brick_list[i].start_x >= ball.start_x <= (brick_list[i].start_x + 234):  # 벽돌 위
+            ball.move_y = -ball.move_y
+        elif ball.start_y <= (brick_list[i].start_y + 105) and brick_list[i].start_x <= ball.start_x <= (brick_list[i].start_x + 234):  # 벽돌 아래
+            ball.move_y = -ball.move_y
+            print("collision occured")
+        elif (brick_list[i].start_y <= ball.start_y <= (brick_list[i].start_y + 105)) and ball.start_x >= brick_list[i].start_x:  # 벽돌 왼쪽
+            ball.move_x = -ball.move_x
+        elif ball.start_x <= (brick_list[i].start_x + 234) and brick_list[i].start_y <= ball.start_y <= (brick_list[i].start_y + 105):  # 벽돌 오른쪽
+            ball.move_x = -ball.move_x
+
+    for i in range(num_bricks):
         brick_list[i].draw_rectangle()
     pygame.display.flip()
 
