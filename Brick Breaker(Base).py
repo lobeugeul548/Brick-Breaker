@@ -24,7 +24,7 @@ class Bar:
         self.start_y = 870
         self.x = 300
         self.y = 25
-        self.speed = 4
+        self.speed = 2
         self.color = random.randint(50, 255), random.randint(50, 255), random.randint(50, 255)
 
     def draw_bar(self):
@@ -36,11 +36,11 @@ class Ball:
     def __init__(self):
         self.ball_img = pygame.image.load("진짜 공.png")
         self.ball_img = pygame.transform.scale(self.ball_img, (50, 50))
-        self.speed = 6
+        self.speed = 1
         self.start_x = 575
         self.start_y = 810
         self.direction = 0
-        while not ((20 <= self.direction <= 70) or (110 <= self.direction <= 160)):
+        while not ((20 <= self.direction <= 70) or (110 <= self.direction <= 160)): # 처음 각도 조정
             self.direction = random.randint(20, 160)
         self.move_x = math.cos(math.pi * (self.direction / 180))
         self.move_y = math.sin(math.pi * (self.direction / 180))
@@ -122,6 +122,10 @@ while not Quit:
 
     # 윗쪽 벽 부딪혔을 때
     elif ball.start_y <= 0:
+        ball.move_y = -ball.move_y
+
+    # 바에 부딪혔을때
+    elif ball.start_y >= 820 and (ball.start_x >= bar.start_x and ball.start_x <= (bar.start_x + 300)):
         ball.move_y = -ball.move_y
 
     for i in range(20):
