@@ -126,23 +126,40 @@ while not Quit:
         ball.move_y = -ball.move_y
 
     # 바에 부딪혔을때
-    elif ball.start_y >= 820 and (bar.start_x <= ball.start_x <= (bar.start_x + 300)):
+    if ball.start_y >= 820 and (bar.start_x <= ball.start_x <= (bar.start_x + 300)): # 윗쪽
         ball.move_y = -ball.move_y
 
     # 벽돌에 부딪혔을떄
     num_bricks = len(brick_list)
+    num = -1
     for i in range(num_bricks):
-        if ball.start_y + 50 >= brick_list[i].start_y and brick_list[i].start_x >= ball.start_x <= (brick_list[i].start_x + 234):  # 벽돌 위
+        num = i
+        this_brick_x = brick_list[i].start_x
+        this_brick_y = brick_list[i].start_y
+        """
+        공 전체 크기: 50x50
+        벽돌 전체 크기: 234x105
+        벽돌 간격 포함: 239x110
+        """
+        if this_brick_y - 50 <= ball.start_y < this_brick_y and this_brick_x - 25 < ball.start_x < this_brick_x + 234 - 25:  # 벽돌 위
             ball.move_y = -ball.move_y
-        elif ball.start_y <= (brick_list[i].start_y + 105) and brick_list[i].start_x <= ball.start_x <= (brick_list[i].start_x + 234):  # 벽돌 아래
+            break
+        elif this_brick_y + 105 - 50 < ball.start_y <= this_brick_y + 105 and this_brick_x - 25 < ball.start_x < this_brick_x + 234 - 25:  # 벽돌 아래
             ball.move_y = -ball.move_y
-            print("collision occured")
-        elif (brick_list[i].start_y <= ball.start_y <= (brick_list[i].start_y + 105)) and ball.start_x >= brick_list[i].start_x:  # 벽돌 왼쪽
+            break
+        elif this_brick_y - 25 < ball.start_y < this_brick_y + 105 - 25 and this_brick_x - 50 <= ball.start_x < this_brick_x - 25:  # 벽돌 왼쪽
             ball.move_x = -ball.move_x
-        elif ball.start_x <= (brick_list[i].start_x + 234) and brick_list[i].start_y <= ball.start_y <= (brick_list[i].start_y + 105):  # 벽돌 오른쪽
+            break
+        elif this_brick_y - 25 < ball.start_y < this_brick_y + 105 - 25 and this_brick_x + 234 - 25 <= ball.start_x <= this_brick_x + 234:  # 벽돌 오른쪽
             ball.move_x = -ball.move_x
+            break
+        else:
+            num = -1
 
-    for i in range(num_bricks):
+    if num != -1:
+        del brick_list[num]
+
+    for i in range(len(brick_list)):
         brick_list[i].draw_rectangle()
     pygame.display.flip()
 
